@@ -58,6 +58,9 @@ function run() {
             const workflow = process.env.GITHUB_WORKFLOW || "";
             const runnerOS = process.env.RUNNER_OS || "";
             const actor = process.env.GITHUB_ACTOR || "";
+            const msg = process.env.SLACK_MESSAGE || "";
+            const Commit_SHA = process.env.GITHUB_SHA || "";
+            
             (() => __awaiter(this, void 0, void 0, function* () {
                 yield web.chat.postMessage({
                     channel: channel_id,
@@ -67,7 +70,7 @@ function run() {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": `GitHub Actions Approval Request`,
+                                "text": `${msg}`,
                             }
                         },
                         {
@@ -95,7 +98,7 @@ function run() {
                                 },
                                 {
                                     "type": "mrkdwn",
-                                    "text": `*RunnerOS:*\n${runnerOS}`
+                                    "text": `*Commit_SHA:*\n${Commit_SHA}`
                                 }
                             ]
                         },
