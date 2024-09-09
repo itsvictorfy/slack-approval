@@ -27,11 +27,13 @@ async function run(): Promise<void> {
     const workflow   = process.env.GITHUB_WORKFLOW || "";
     const runnerOS   = process.env.RUNNER_OS || "";
     const actor      = process.env.GITHUB_ACTOR || "";
+    const msg = process.env.SLACK_MESSAGE || "";
+    const commit_sha = process.env.GITHUB_SHA || "";
 
     (async () => {
       await web.chat.postMessage({ 
         channel: channel_id, 
-        text: "GitHub Actions Approval request",
+        text: msg,
         blocks: [
             {
               "type": "section",
@@ -65,7 +67,7 @@ async function run(): Promise<void> {
                 },
                 {
                   "type": "mrkdwn",
-                  "text": `*RunnerOS:*\n${runnerOS}`
+                  "text": `*Commit Sha:*\n${commit_sha}`
                 }
               ]
             },
