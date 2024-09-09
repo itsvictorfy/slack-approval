@@ -28,18 +28,18 @@ async function run(): Promise<void> {
     const runnerOS   = process.env.RUNNER_OS || "";
     const actor      = process.env.GITHUB_ACTOR || "";
     const msg = process.env.SLACK_MESSAGE || "";
-    const commit_sha = process.env.GITHUB_SHA || "";
+    const Commit_SHA = process.env.GITHUB_SHA || "";
 
     (async () => {
       await web.chat.postMessage({ 
         channel: channel_id, 
-        text: msg,
+        text: "GitHub Actions Approval request",
         blocks: [
             {
               "type": "section",
               "text": {
                   "type": "mrkdwn",
-                  "text": `GitHub Actions Approval Request`,
+                  "text": `{${msg}}`,
                 }
             },
             {
@@ -67,7 +67,7 @@ async function run(): Promise<void> {
                 },
                 {
                   "type": "mrkdwn",
-                  "text": `*Commit Sha:*\n${commit_sha}`
+                  "text": `*Commit_SHA:*\n${Commit_SHA}`
                 }
               ]
             },
