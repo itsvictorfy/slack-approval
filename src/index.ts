@@ -105,51 +105,61 @@ async function run(): Promise<void> {
     app.action('slack-approval-approve', async ({ack, client, body, logger}) => {
       await ack();
       try {
-        const response_blocks = (<BlockAction>body).message?.blocks
-        response_blocks.pop()
+        const message = (<BlockAction>body).message;
+        if (!message) {
+          logger.error("Message is null or undefined");
+        }
+    
+        const response_blocks = message?.blocks || [];
+        response_blocks.pop();
         response_blocks.push({
           'type': 'section',
           'text': {
             'type': 'mrkdwn',
-            'text': `Approved by <@${body.user.id}> `,
+            'text': `Approved by <@${body.user.id}>`,
           },
-        })
-
+        });
+    
         await client.chat.update({
           channel: body.channel?.id || "",
-          ts: (<BlockAction>body).message?.ts || "",
+          ts: message?.ts ?? "",
           blocks: response_blocks
-        })
+        });
       } catch (error) {
-        logger.error(error)
+        logger.error(error);
       }
-
-      process.exit(0)
+    
+      process.exit(0);
     });
-
+    
     app.action('slack-approval-reject', async ({ack, client, body, logger}) => {
       await ack();
       try {
-        const response_blocks = (<BlockAction>body).message?.blocks
-        response_blocks.pop()
+        const message = (<BlockAction>body).message;
+        if (!message) {
+          logger.error("Message is null or undefined");
+        }
+    
+        const response_blocks = message?.blocks ?? [];
+        response_blocks.pop();
         response_blocks.push({
           'type': 'section',
           'text': {
             'type': 'mrkdwn',
             'text': `Rejected by <@${body.user.id}>`,
           },
-        })
-
+        });
+    
         await client.chat.update({
           channel: body.channel?.id || "",
-          ts: (<BlockAction>body).message?.ts || "",
+          ts: message?.ts || "",
           blocks: response_blocks
-        })
+        });
       } catch (error) {
-        logger.error(error)
+        logger.error(error);
       }
-
-      process.exit(1)
+    
+      process.exit(1);
     });
 
     (async () => {

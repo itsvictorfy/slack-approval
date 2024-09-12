@@ -133,23 +133,25 @@ function run() {
                 });
             }))();
             app.action('slack-approval-approve', ({ ack, client, body, logger }) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b, _c;
                 yield ack();
                 try {
-                    const response_blocks = (_a = body.message) === null || _a === void 0 ? void 0 : _a.blocks;
-                    response_blocks.pop();
-                    response_blocks.push({
-                        'type': 'section',
-                        'text': {
-                            'type': 'mrkdwn',
-                            'text': `Approved by <@${body.user.id}> `,
-                        },
-                    });
-                    yield client.chat.update({
-                        channel: ((_b = body.channel) === null || _b === void 0 ? void 0 : _b.id) || "",
-                        ts: ((_c = body.message) === null || _c === void 0 ? void 0 : _c.ts) || "",
-                        blocks: response_blocks
-                    });
+                    const message = body.message || {};
+                    const blocks = message.blocks || [];
+                    if (blocks.length > 0) {
+                        blocks.pop();
+                        blocks.push({
+                            'type': 'section',
+                            'text': {
+                                'type': 'mrkdwn',
+                                'text': `Approved by <@${body.user.id}> `,
+                            },
+                        });
+                        yield client.chat.update({
+                            channel: body.channel?.id || "",
+                            ts: message.ts || "",
+                            blocks: blocks
+                        });
+                    }
                 }
                 catch (error) {
                     logger.error(error);
@@ -157,23 +159,25 @@ function run() {
                 process.exit(0);
             }));
             app.action('slack-approval-reject', ({ ack, client, body, logger }) => __awaiter(this, void 0, void 0, function* () {
-                var _d, _e, _f;
                 yield ack();
                 try {
-                    const response_blocks = (_d = body.message) === null || _d === void 0 ? void 0 : _d.blocks;
-                    response_blocks.pop();
-                    response_blocks.push({
-                        'type': 'section',
-                        'text': {
-                            'type': 'mrkdwn',
-                            'text': `Rejected by <@${body.user.id}>`,
-                        },
-                    });
-                    yield client.chat.update({
-                        channel: ((_e = body.channel) === null || _e === void 0 ? void 0 : _e.id) || "",
-                        ts: ((_f = body.message) === null || _f === void 0 ? void 0 : _f.ts) || "",
-                        blocks: response_blocks
-                    });
+                    const message = body.message || {};
+                    const blocks = message.blocks || [];
+                    if (blocks.length > 0) {
+                        blocks.pop();
+                        blocks.push({
+                            'type': 'section',
+                            'text': {
+                                'type': 'mrkdwn',
+                                'text': `Rejected by <@${body.user.id}>`,
+                            },
+                        });
+                        yield client.chat.update({
+                            channel: body.channel?.id || "",
+                            ts: message.ts || "",
+                            blocks: blocks
+                        });
+                    }
                 }
                 catch (error) {
                     logger.error(error);
